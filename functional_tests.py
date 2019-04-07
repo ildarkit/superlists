@@ -32,10 +32,7 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-                any(row.test == '1: купить павлиньи перья' for row in rows),
-                "Новый элемент не появился в таблице"
-        )
+        self.asserIn('1: Купить павлиньи перья', [row.text for row in rows])
 
         self.fail('Закончить тест!')
 
