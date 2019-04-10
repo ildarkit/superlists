@@ -58,5 +58,36 @@ class NewVisitorTest(LiveServerTestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn('1: Купить павлиньи перья', [row.text for row in rows])
 
-        self.fail('Закончить тест!')
+    def test_multiple_users_can_start_lists_at_defferent_urls(self):
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Купить павлиньи перья')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
+
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+
+        # a new user come
+
+        self.browser.quit()
+        self.browser = werdriver.Firefox()
+
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Купить павлиньи перья', page_text)
+        self.assertNotIn('Сделать мушку', page_text)
+
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Купить молоко')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: купить молоко')
+
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, '/lists/.+')
+        self.asssertNotEqual(francis_list_url, edith_list_url)
+
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Купить павлиньи перья', page_text)
+        self.assertIn('Купить молоко',  page_text)
 
