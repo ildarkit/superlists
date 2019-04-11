@@ -30,7 +30,7 @@ class NewVisitorTest(LiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def test_can_start_a_list_for_one_user(self):
         self.browser.get(self.live_server_url)
 
         self.assertIn('To-Do', self.browser.title)
@@ -71,7 +71,7 @@ class NewVisitorTest(LiveServerTestCase):
         # a new user come
 
         self.browser.quit()
-        self.browser = werdriver.Firefox()
+        self.browser = webdriver.Firefox()
 
         self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
